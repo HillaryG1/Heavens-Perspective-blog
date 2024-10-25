@@ -19,14 +19,14 @@ const Comments = () => {
         <div className={styles.comment}>
           <div className={styles.user}>
             <Image
-              src="/p1.jpeg"
+              src="/pro.png"
               alt=""
               width={50}
               height={50}
               clasName={styles.image}
             />
             <div className={styles.userInfo}>
-              <span className={styles.username}>John Mtu</span>
+              <span className={styles.username}>John Mandela</span>
               <span className={styles.date}>10.25.2024</span>
             </div>
           </div>

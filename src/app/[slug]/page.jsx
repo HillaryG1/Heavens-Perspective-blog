@@ -1,6 +1,7 @@
 import Menu from "@/components/Menu/Menu";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
+import Comments from "@/components/comments/Comments";
 
 const SinglePage = () => {
   return (
@@ -12,7 +13,7 @@ const SinglePage = () => {
           </h1>
           <div className={styles.user}>
             <div className={styles.userImageContainer}>
-              <Image src="/img2.jpg" alt="" fill className={styles.avatar} />
+              <Image src="/pro.png" alt="" fill className={styles.avatar} />
             </div>
             <div className={styles.userTextContainer}>
               <span className={styles.username}>Hillary Gilbert</span>
@@ -49,6 +50,9 @@ const SinglePage = () => {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
+          </div>
+          <div className={styles.comment}>
+            <Comments />
           </div>
         </div>
         <Menu />
