@@ -3,7 +3,7 @@ import styles from "./homepage.module.css";
 import Featured from "@/components/featured/Featured";
 import CategoryList from "@/components/categorylist/CategoryList";
 import CardList from "@/components/CardList/CardList";
-import Menu from "@/components/menu/Menu";
+import Menu from "@/components/Menu/Menu";
 import Card from "@/components/card/Card";
 
 export default function Home({ searchParams }) {
