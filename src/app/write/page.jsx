@@ -5,7 +5,7 @@ import styles from "./writePage.module.css";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
 import { useRouter } from "next/navigation";
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 // import {
 //   getStorage,
 //   ref,
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import ReactQuill from "react-quill";
 
 const WritePage = () => {
-  // const { status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
