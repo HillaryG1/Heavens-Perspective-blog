@@ -4,7 +4,7 @@ import Image from "next/image";
 import Comments from "@/components/comments/Comments";
 
 const getData = async (slug) => {
-  const res = await fetch(`http://localhost:3002/api/posts/${slug}`, {
+  const res = await fetch(`https://heavensperspective.org/api/posts/${slug}`, {
     cache: "no-store",
   });
 

@@ -6,17 +6,17 @@ import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-// import {
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-//   getDownloadURL,
-// } from "firebase/storage";
-// import { app } from "@/utils/firebase";
-import ReactQuill from "react-quill";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "@/utils/firebase";
 
 const WritePage = () => {
   const { status } = useSession();
+  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
@@ -25,10 +25,12 @@ const WritePage = () => {
   const [value, setValue] = useState("");
   const [title, setTitle] = useState("");
   const [catSlug, setCatSlug] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    // const storage = getStorage(app);
-    const upload = () => {
+    if (file) {
+      setUploading(true);
+      const storage = getStorage(app);
       const name = new Date().getTime() + file.name;
       const storageRef = ref(storage, name);
 
@@ -49,16 +51,18 @@ const WritePage = () => {
               break;
           }
         },
-        (error) => {},
+        (error) => {
+          console.error("Error uploading file:", error);
+          setUploading(false);
+        },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setMedia(downloadURL);
+            setUploading(false);
           });
         }
       );
-    };
-
-    file && upload();
+    }
   }, [file]);
 
   if (status === "loading") {
@@ -67,6 +71,7 @@ const WritePage = () => {
 
   if (status === "unauthenticated") {
     router.push("/");
+    return null; // Return null so the component doesn't render when redirecting
   }
 
   const slugify = (str) =>
@@ -85,13 +90,15 @@ const WritePage = () => {
         desc: value,
         img: media,
         slug: slugify(title),
-        catSlug: catSlug || "style", //If not selected, choose the general category
+        catSlug: catSlug || "style", // Default to "style" category
       }),
     });
 
     if (res.status === 200) {
       const data = await res.json();
       router.push(`/posts/${data.slug}`);
+    } else {
+      console.error("Failed to create post:", res);
     }
   };
 
@@ -147,8 +154,12 @@ const WritePage = () => {
           placeholder="Tell your story..."
         />
       </div>
-      <button className={styles.publish} onClick={handleSubmit}>
-        Publish
+      <button
+        className={styles.publish}
+        onClick={handleSubmit}
+        disabled={uploading || !title || !value}
+      >
+        {uploading ? "Publishing..." : "Publish"}
       </button>
     </div>
   );

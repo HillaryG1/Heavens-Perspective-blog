@@ -4,33 +4,51 @@ import Link from "next/link";
 import Image from "next/image";
 
 const getData = async () => {
-  const res = await fetch("http://localhost:3002/api/categories", {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch("https://heavensperspective.org/api/categories", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
 
-  if (!res.ok) {
-    throw new Error("Failed");
+    if (!res.ok) {
+      throw new Error(`Failed to fetch categories: ${res.status}`);
+    }
+
+    const categories = await res.json();
+    return categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
-
-  return res.json();
 };
 
 const CategoryList = async () => {
-  const data = await getData();
+  const categories = await getData();
+
+  if (!categories || categories.length === 0) {
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>Popular Categories</h1>
+        <div className={styles.categories}>
+          <p>No categories available</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Popular Categories</h1>
       <div className={styles.categories}>
-        {data?.map((item) => (
+        {categories.map((item) => (
           <Link
-            href="/blog?cat=style"
+            href={`/blog?cat=${item.slug}`}
             className={`${styles.category} ${styles[item.slug]}`}
-            key={item._id}
+            key={item.id || item._id}
           >
             {item.img && (
               <Image
                 src={item.img}
-                alt=""
+                alt={`${item.title} category`}
                 width={32}
                 height={32}
                 className={styles.image}
